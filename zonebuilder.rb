@@ -149,8 +149,8 @@ private
       # times: slave refresh, retry, expire, negative cache
       io.puts "@	SOA	#{domain.soa} #{domain.hostmaster} (#{serial} 20m 3m 7d 20m)"
 
-      items_for_view(domain.ns, view).each {|ns| io.puts "	NS	#{ns}" }
-      items_for_view(domain.mx, view).each {|pri, name| io.puts "	MX	#{pri} #{name}"}
+      items_for_view(domain.ns, view).each{|ns| io.puts "	NS	#{ns}" }
+      items_for_view(domain.mx, view).each{|pri, name| io.puts "	MX	#{pri} #{name}"}
 
       make_host io, domain, nil, view
 
@@ -173,14 +173,13 @@ private
       # times: slave refresh, retry, expire, negative cache
       io.puts "@	SOA	#{domain.soa} #{domain.hostmaster} (#{serial} 20m 3m 7d 20m)"
 
-      items_for_view(domain.ns, view).each {|ns| io.puts "	NS	#{ns}" }
+      items_for_view(domain.ns, view).each{|ns| io.puts "	NS	#{ns}" }
 
       ptrs = {}
-      items_for_view(domain.ip, view).each{|ip| ptrs[ip] ||= domain.fqdn}
       domain.hosts.each do |name, host|
-        items_for_view(host.ip, view).each{|ip|
-          ptrs[ip] ||= host.name}
+        items_for_view(host.ip, view).each{|ip| ptrs[ip] ||= host.name}
       end
+      items_for_view(domain.ip, view).each{|ip| ptrs[ip] ||= domain.fqdn}
 
       ptrs.each do |ip, host|
         io.puts "#{ip_to_arpa ip}	IN	PTR	#{host}"
@@ -200,14 +199,13 @@ private
       # times: slave refresh, retry, expire, negative cache
       io.puts "@	SOA	#{domain.soa} #{domain.hostmaster} (#{serial} 20m 3m 7d 20m)"
 
-      items_for_view(domain.ns, view).each {|ns| io.puts "	NS	#{ns}" }
+      items_for_view(domain.ns, view).each{|ns| io.puts "	NS	#{ns}" }
 
       ptrs = {}
-      items_for_view(domain.ip6, view).each{|ip| ptrs[ip] ||= domain.fqdn}
       domain.hosts.each do |name, host|
-        items_for_view(host.ip6, view).each{|ip|
-          ptrs[ip] ||= host.name}
+        items_for_view(host.ip6, view).each{|ip| ptrs[ip] ||= host.name}
       end
+      items_for_view(domain.ip6, view).each{|ip| ptrs[ip] ||= domain.fqdn}
 
       ptrs.each do |ip, host|
         io.puts "#{ip6_to_arpa ip}	IN	PTR	#{host}"
