@@ -7,7 +7,8 @@ module ZoneBuilder
     db = DomainBuilder.new d
     db.instance_eval &block
 
-    serial = Time.now.to_i
+    zone_file = /^(.*):\d*:in `.*'$/.match(caller()[1])[1]
+    serial = File.mtime(zone_file).to_i
     d.views.each do |view|
       make_zone d, serial, view
       make_rzone d, serial, view
