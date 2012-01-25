@@ -66,7 +66,9 @@ private
     def initialize fqdn
       super "@"
 
+      fqdn += '.' unless name.end_with? '.'
       self.fqdn = fqdn
+      self.filename = fqdn.chomp('.')
       self.ns = hash_with_views
       self.mx = hash_with_views
       self.hosts = {}
@@ -80,7 +82,7 @@ private
     def fq name
       name = name.to_s
       return name if name.end_with? '.'
-      return name + '.' + self.fqdn + '.'
+      return name + '.' + self.fqdn
     end
   end
 
@@ -138,7 +140,7 @@ private
   end
 
   def make_zone domain, serial, view
-    zname = "db.#{domain.fqdn}@#{view}"
+    zname = "db.#{domain.filename}@#{view}"
 
     open(zname, 'w') do |io|
       io.puts "$TTL 20m"
@@ -163,7 +165,7 @@ private
     prefix = domain.prefix[view] || domain.prefix[nil]
     return unless prefix
 
-    zname = "db.#{domain.fqdn}@#{view}.rev"
+    zname = "db.#{domain.filename}@#{view}.rev"
     open(zname, 'w') do |io|
       io.puts "$TTL 20m"
       io.puts "$ORIGIN #{ip_to_arpa prefix}"
@@ -190,7 +192,7 @@ private
     prefix = domain.prefix6[view] || domain.prefix6[nil]
     return unless prefix
 
-    zname = "db.#{domain.fqdn}@#{view}.rev6"
+    zname = "db.#{domain.filename}@#{view}.rev6"
     open(zname, 'w') do |io|
       io.puts "$TTL 20m"
       io.puts "$ORIGIN #{ip6_to_arpa prefix}"
