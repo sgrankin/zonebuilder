@@ -38,4 +38,8 @@ domain 'example.com' do
 
     name :mail, :mx1, :www, :ns1
   end
+
+  srv :kerberos, :udp, 0, 0, 88, :kdc1
+  srv :kerberos, :tcp, 0, 0, 88, :kdc1
+  srv 'kerberos-tls', :tcp, 0, 0, 88, :kdc1
 end

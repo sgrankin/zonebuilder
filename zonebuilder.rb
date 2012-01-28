@@ -71,6 +71,7 @@ private
       self.filename = fqdn.chomp('.')
       self.ns = hash_with_views
       self.mx = hash_with_views
+      self.srv = hash_with_views
       self.hosts = {}
       self.views = []
       self.prefix = {}
@@ -117,6 +118,10 @@ private
       @d.ns[view] << @d.fq(name)
     end
 
+    def srv service, proto, priority, weight, port, target, view = nil
+      @d.srv[view] << ["_#{service}._#{proto}", priority, weight, port, @d.fq(target)]
+    end
+
     def host name, &block
       h = Host.new @d.fq(name)
       hb = HostBuilder.new h
@@ -149,8 +154,8 @@ private
       # times: slave refresh, retry, expire, negative cache
       io.puts "@	SOA	#{domain.soa} #{domain.hostmaster} (#{serial} 20m 3m 7d 20m)"
 
-      items_for_view(domain.ns, view).each{|ns| io.puts "	NS	#{ns}" }
-      items_for_view(domain.mx, view).each{|pri, name| io.puts "	MX	#{pri} #{name}"}
+      items_for_view(domain.ns, view).each{|ns| io.puts "@	NS	#{ns}" }
+      items_for_view(domain.mx, view).each{|pri, name| io.puts "@	MX	#{pri} #{name}"}
 
       make_host io, domain, nil, view
 
@@ -158,6 +163,8 @@ private
         next if name == :* # skip the default host
         make_host io, host, domain.hosts[:*], view
       end
+
+      items_for_view(domain.srv, view).each{|name, pri, weight, port, target| io.puts "#{name}	SRV	#{pri} #{weight} #{port} #{target}"}
     end
   end
 
