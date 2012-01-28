@@ -72,6 +72,7 @@ private
       self.ns = hash_with_views
       self.mx = hash_with_views
       self.srv = hash_with_views
+      self.txt = hash_with_views
       self.hosts = {}
       self.views = []
       self.prefix = {}
@@ -122,6 +123,10 @@ private
       @d.srv[view] << ["_#{service}._#{proto}", priority, weight, port, @d.fq(target)]
     end
 
+    def txt name, value, view = nil
+      @d.txt[view] << [name, value]
+    end
+
     def host name, &block
       h = Host.new @d.fq(name)
       hb = HostBuilder.new h
@@ -165,6 +170,7 @@ private
       end
 
       items_for_view(domain.srv, view).each{|name, pri, weight, port, target| io.puts "#{name}	SRV	#{pri} #{weight} #{port} #{target}"}
+      items_for_view(domain.txt, view).each{|name, value| io.puts "#{name}	TXT	\"#{value}\""}
     end
   end
 

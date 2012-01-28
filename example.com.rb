@@ -42,4 +42,6 @@ domain 'example.com' do
   srv :kerberos, :udp, 0, 0, 88, :kdc1
   srv :kerberos, :tcp, 0, 0, 88, :kdc1
   srv 'kerberos-tls', :tcp, 0, 0, 88, :kdc1
+
+  txt :_kerberos, 'EXAMPLE.COM'
 end
