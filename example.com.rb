@@ -1,42 +1,38 @@
 #!/usr/bin/env ruby
+$LOAD_PATH.unshift File.dirname(__FILE__)
 
-require './zonebuilder'
+require 'zone_builder'
 
 PUBLIC_IP = '1.1.1.1'
 
-domain 'example.com' do
-  view :internal
-  view :external
-
+ZoneBuilder::domain 'example.com' do
   soa 'ns1'
 
-  ip_external PUBLIC_IP
-  ip_internal '192.168.1.1'
+  view(:external) {ip PUBLIC_IP}
+  view(:internal) {ip '192.168.1.1'}
   ip6 '2001::1'
 
-  prefix_internal '192.168.1'
-  prefix6 '2001::/64'
+  view(:internal) {net '192.168.1'}
+  net6 '2001::/64'
 
   mx 10, :mx1
 
-  ns_external 'ns1.example.org.'
+  view(:external) {ns 'ns1.example.org.'}
 
   host :* do
-    ip_external PUBLIC_IP
+    view(:external) {ip PUBLIC_IP}
   end
 
   host :host1 do
-    ip_internal '192.168.1.1'
+    view(:internal) {ip '192.168.1.1'}
     ip6 '2001::1'
-
-    name :vpn
+    cname :vpn
   end
 
   host :host2 do
-    ip_internal '192.168.1.2'
+    view(:internal) {ip '192.168.1.2'}
     ip6 '2001::2'
-
-    name :mail, :mx1, :www, :ns1
+    cname :mail, :mx1, :www, :ns
   end
 
   srv :kerberos, :udp, 0, 0, 88, :kdc1
