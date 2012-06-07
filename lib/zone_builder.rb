@@ -1,3 +1,5 @@
+require "zone_builder/version"
+
 module ZoneBuilder
 public
   # Define a new zone.  Zonefiles will be created, named after the zone.
