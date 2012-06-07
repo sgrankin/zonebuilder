@@ -12,4 +12,6 @@ Gem::Specification.new do |s|
   s.files = `git ls-files`.split($/)
   s.has_rdoc = 'yard'
   s.license = 'MIT'
+
+  s.add_development_dependency 'bundler'
 end
